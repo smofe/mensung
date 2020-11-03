@@ -17,7 +17,7 @@ class MealView extends StatelessWidget {
         Text("Meal name:" + meal.name),
         Text("Meal rating:" + meal.rating.toString()),
         Text("Meal notes:" + meal.notes),
-        Text("Meal eating on:" + meal.createdAt.toString()),
+        Text("Meal eating on:" + meal.createdAt.toDate().toString()),
       ])
     );
   }

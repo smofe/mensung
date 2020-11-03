@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'meal.dart';
 
 class MealInputState extends State<MealInput> {
+  final dbRef = FirebaseFirestore.instance;
   final _formKey = GlobalKey<FormState>();
   var _mealNameController = TextEditingController();
   var _mealNotesController = TextEditingController();
@@ -70,10 +72,17 @@ class MealInputState extends State<MealInput> {
             ])));
   }
 
-  void _addMeal(BuildContext context) {
-    String mealName = _mealNameController.text;
+  void _addMeal (BuildContext context) async {
+    dbRef.collection("meal").add({
+      'name': _mealNameController.text,
+      'notes': _mealNotesController.text,
+      'rating': _rating,
+      'createdAt': Timestamp.now()
+    });
+    Navigator.pop(context);
+    /*String mealName = _mealNameController.text;
     String mealNotes = _mealNotesController.text;
-    Navigator.pop(context, new Meal.withNotes(mealName, _rating, mealNotes));
+    Navigator.pop(context, new Meal.withNotes(mealName, _rating, mealNotes)); */
   }
 }
 

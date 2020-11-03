@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.mensa_rating_app">
+    package="com.smofe.mensa_rating_app">
    <application
         android:label="mensa_rating_app"
         android:icon="@mipmap/ic_launcher">

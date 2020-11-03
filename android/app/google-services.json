@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "657875841646",
+    "firebase_url": "https://mensung.firebaseio.com",
+    "project_id": "mensung",
+    "storage_bucket": "mensung.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:657875841646:android:881678f5e97b9134dfec7f",
+        "android_client_info": {
+          "package_name": "com.smofe.mensa_rating_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "657875841646-09fnh642j2qgfdh2a15ulusl9qgsuq41.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvwzAt_uPt_geXmVLemLYdoBp6EcWYeKM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "657875841646-09fnh642j2qgfdh2a15ulusl9qgsuq41.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
