@@ -34,8 +34,10 @@ class MealInputState extends State<MealInput> {
                   }
                   return null;
                 },
-                decoration: new InputDecoration(hintText: "Meal Name",
-                contentPadding: EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15)),
+                decoration: new InputDecoration(
+                    hintText: "Meal Name",
+                    contentPadding: EdgeInsets.only(
+                        left: 15, bottom: 11, top: 11, right: 15)),
                 controller: _mealNameController,
               ),
               RatingBar(
@@ -58,7 +60,8 @@ class MealInputState extends State<MealInput> {
                 maxLines: null,
                 decoration: new InputDecoration(
                     hintText: "Additional Notes",
-                    contentPadding: EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15)),
+                    contentPadding: EdgeInsets.only(
+                        left: 15, bottom: 11, top: 11, right: 15)),
                 controller: _mealNotesController,
               ),
               ElevatedButton(
@@ -72,7 +75,7 @@ class MealInputState extends State<MealInput> {
             ])));
   }
 
-  void _addMeal (BuildContext context) async {
+  void _addMeal(BuildContext context) async {
     dbRef.collection("meal").add({
       'name': _mealNameController.text,
       'notes': _mealNotesController.text,
