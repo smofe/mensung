@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Meal {
+  String id;
   String name;
   String notes;
   double rating;

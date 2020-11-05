@@ -25,63 +25,22 @@ class MyApp extends StatelessWidget {
 }
 
 class MealOverviewState extends State<MealOverview> {
-   static List<Meal> UserMealList = [];
-
-   void _getMealsFromUser() async {
-     List mealList = await FirebaseFirestore.instance.collection('meal').get().then((value) => value.docs);
-     UserMealList = [];
-     for (int i=0; i < mealList.length; i++){
-       String mealDocId = mealList[i].documentID.toString();
-       //FirebaseFirestore.instance.collection("meal").doc(mealDocId).collection("user").snapshots().listen(_createListOfMeals);
-       FirebaseFirestore.instance.collection("meal").doc(mealDocId).collection("user").snapshots().forEach((element) {
-         var docs = element.docs;
-         for (var d in docs) {
-           /*print("Meal: " + mealDocId + " | " + (auth.currentUser.uid == d.get("uid")).toString() );
-           print("Meal: " + mealDocId + " | current user: " + auth.currentUser.uid + " | meal user: " + d.get("uid")); */
-           //FirebaseFirestore.instance.collection("meal").doc(mealDocId).snapshots().first);
-           if (auth.currentUser.uid == d.get("uid")) {
-               UserMealList.add(Meal.fromSnapshot(mealList[i]));
-           }
-         }
-       });
-     }
-   }
-
-   Widget _buildBody(BuildContext context) {
-     _getMealsFromUser();
-     print(UserMealList);
-     return ListView.builder(
-         padding: const EdgeInsets.all(8),
-         itemCount: UserMealList.length,
-         itemBuilder: (BuildContext context, int index) {
-           Meal meal = UserMealList[index];
-           return Padding(
-             key: ValueKey(meal.name),
-             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-             child: Container(
-               decoration: BoxDecoration(
-                 border: Border.all(color: Colors.grey),
-                 borderRadius: BorderRadius.circular(5.0),
-               ),
-               child: ListTile(
-                 title: Text(meal.name),
-                 trailing: Text(meal.rating.toString()),
-                 onTap: () => _viewMeal(meal),
-               ),
-             ),
-           );
-         }
-     );
-     /*return StreamBuilder<QuerySnapshot>(
-         stream: FirebaseFirestore.instance.collection('meal').snapshots(),
-         builder: (context, snapshot) {
-           if (!snapshot.hasData) return LinearProgressIndicator();
-           return _buildMealList(context, snapshot.data.docs);
-         }
-     ); */
-   }
+  Widget _buildBody(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('users').doc(auth.currentUser.uid).collection("meals").snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return LinearProgressIndicator();
+          return _buildMealList(context, snapshot.data.docs);
+        }
+    );
+  }
 
   Widget _buildMealList(BuildContext context, List<DocumentSnapshot> snapshot) {
+    if (snapshot.length == 0) {
+      return Center(
+        child: Text('No meals added yet.'),
+      );
+    }
     return ListView(
       padding: const EdgeInsets.only(top: 20.0),
       children: snapshot.map((data) => _buildListItem(context, data)).toList(),
@@ -89,43 +48,23 @@ class MealOverviewState extends State<MealOverview> {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-
-     Future<bool> _hasUserRatedThisMeal() async {
-       var all_meals = FirebaseFirestore.instance.collection('meal');
-       var current_meal = await all_meals.doc(data.id).get();
-       var current_meal_users = await current_meal.reference.collection('user').get();
-       bool user_found = false;
-       current_meal_users.docs.forEach((element) {
-         user_found = true;
-        });
-       return user_found;
-     }
-  //print("logging..." + data.data().toString());
-     final meal = Meal.fromSnapshot(data);
-     /*_hasUserRatedThisMeal().then((value) {
-       print("query complete");
-       if (!value) {
-         print("user not found");
-         return Padding(
-           padding: const EdgeInsets.all(0.0),
-         );
-       }
-     }); */
-     return Padding(
-       key: ValueKey(meal.name),
-       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-       child: Container(
-         decoration: BoxDecoration(
-           border: Border.all(color: Colors.grey),
-           borderRadius: BorderRadius.circular(5.0),
-         ),
-         child: ListTile(
-           title: Text(meal.name),
-           trailing: Text(meal.rating.toString()),
-           onTap: () => _viewMeal(meal),
-         ),
-       ),
-     );
+    var meal = Meal.fromSnapshot(data);
+    meal.id = data.id;
+    return Padding(
+      key: ValueKey(meal.name),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        child: ListTile(
+          title: Text(meal.name),
+          trailing: Text(meal.rating.toString()),
+          onTap: () => _viewMeal(meal),
+        ),
+      ),
+    );
 
   }
 
@@ -147,7 +86,7 @@ class MealOverviewState extends State<MealOverview> {
       context, MaterialPageRoute(builder: (context) => MealInput()));
     if (result != null) {
       setState(() {
-        UserMealList.add(result);
+        //UserMealList.add(result);
       });
     }
   }
