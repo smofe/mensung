@@ -10,7 +10,6 @@ import 'meal_input.dart';
 
 FirebaseAuth auth = FirebaseAuth.instance;
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -20,19 +19,23 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Mensa Rating Tracker', home: AuthenticationView());
+    return MaterialApp(
+        title: 'Mensa Rating Tracker', home: AuthenticationView());
   }
 }
 
 class MealOverviewState extends State<MealOverview> {
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('users').doc(auth.currentUser.uid).collection("meals").snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(auth.currentUser.uid)
+            .collection("meals")
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return LinearProgressIndicator();
           return _buildMealList(context, snapshot.data.docs);
-        }
-    );
+        });
   }
 
   Widget _buildMealList(BuildContext context, List<DocumentSnapshot> snapshot) {
@@ -65,13 +68,29 @@ class MealOverviewState extends State<MealOverview> {
         ),
       ),
     );
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Mensa Meal Ratings')),
+      appBar: AppBar(
+        title: Text('Mensa Meal Ratings'),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: _handleMenuClick,
+            itemBuilder: (BuildContext context) {
+              return {
+                'Logout',
+              }.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          )
+        ],
+      ),
       body: _buildBody(context),
       floatingActionButton: FloatingActionButton(
         onPressed: _addNewMeal,
@@ -83,7 +102,7 @@ class MealOverviewState extends State<MealOverview> {
 
   void _addNewMeal() async {
     final result = await Navigator.push(
-      context, MaterialPageRoute(builder: (context) => MealInput()));
+        context, MaterialPageRoute(builder: (context) => MealInput()));
     if (result != null) {
       setState(() {
         //UserMealList.add(result);
@@ -91,13 +110,25 @@ class MealOverviewState extends State<MealOverview> {
     }
   }
 
-   void _viewMeal(Meal meal) async {
-    print(meal.notes);
-     final result = await Navigator.push(
-         context, MaterialPageRoute(builder: (context) => MealView(meal)));
-     }
-   }
+  void _handleMenuClick(String value) {
+    switch (value) {
+      case 'Logout':
+        _logout();
+    }
+  }
 
+  void _logout() async {
+    await auth.signOut();
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => AuthenticationView()));
+  }
+
+  void _viewMeal(Meal meal) async {
+    print(meal.notes);
+    final result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => MealView(meal)));
+  }
+}
 
 class MealOverview extends StatefulWidget {
   @override
