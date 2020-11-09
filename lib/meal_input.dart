@@ -8,6 +8,9 @@ import 'package:mensa_rating_app/camera_view.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:intl/intl.dart';
 
 
 import 'meal.dart';
@@ -28,6 +31,7 @@ class MealInputState extends State<MealInput> {
   @override
   void initState() {
     _ratingController.text = "3.0";
+
     super.initState();
   }
 
@@ -43,6 +47,15 @@ class MealInputState extends State<MealInput> {
               padding: EdgeInsets.all(20),
             ),
             _mealPhoto(context),
+            FutureBuilder<List<MensaMeal>>(
+              future: _fetchMeals(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) return Text("${snapshot.error}");
+                return snapshot.hasData
+                    ? _mensaMealList(context, snapshot.data)
+                    : Center(child: CircularProgressIndicator());
+              },
+            ),
             TextFormField(
               validator: (value) {
                 if (value.isEmpty) {
@@ -88,6 +101,7 @@ class MealInputState extends State<MealInput> {
               },
               child: Text('Add meal'),
             ),
+
           ])),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _takePicture(context),
@@ -95,6 +109,28 @@ class MealInputState extends State<MealInput> {
         backgroundColor: Colors.green,
       ),
     );
+  }
+
+  Widget _mensaMealList(BuildContext context, List<MensaMeal> meals) {
+    return Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+      Flexible(
+          child: Container(
+    padding: EdgeInsets.all(30),
+    child:DropdownButton(
+              hint: Text("Select a meal from today"),
+              isExpanded: true,
+              onChanged: (value) {},
+              items: meals.map((meal) {
+                return new DropdownMenuItem<String>(
+                  value: meal.name,
+                  child: new Text(meal.name),
+                  onTap: () {
+                    _mealNameController.text = meal.name;
+                    _mealNotesController.text = meal.category;
+                    },
+                );
+              }).toList())))
+    ]);
   }
 
   Widget _mealPhoto(BuildContext context) {
@@ -107,7 +143,7 @@ class MealInputState extends State<MealInput> {
         fit: BoxFit.fitWidth);
   }
 
-  void _safePhoto(String name) async{
+  void _safePhoto(String name) async {
     File photo = File(_photoPath);
     try {
       await storage.ref('$name.png').putFile(photo);
@@ -129,8 +165,6 @@ class MealInputState extends State<MealInput> {
     });
     docRef.then((value) => _safePhoto(value.path));
 
-
-
     Navigator.pop(context, _photoPath);
   }
 
@@ -147,9 +181,32 @@ class MealInputState extends State<MealInput> {
       });
     }
   }
+
+  List<MensaMeal> parseMeals(String responseBody) {
+    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+    return parsed.map<MensaMeal>((json) => MensaMeal.fromJson(json)).toList();
+  }
+
+  Future<List<MensaMeal>> _fetchMeals() async {
+    final dateFormat = DateFormat("yyyy-MM-dd");
+    String today = dateFormat.format(DateTime.now());
+    final response = await http
+        .get('https://openmensa.org/api/v2/canteens/62/days/$today/meals');
+    return parseMeals(response.body);
+  }
 }
 
 class MealInput extends StatefulWidget {
   @override
   MealInputState createState() => new MealInputState();
+}
+
+class MensaMeal {
+  final String name;
+  final String category;
+
+  MensaMeal(this.name, this.category);
+  factory MensaMeal.fromJson(Map<String, dynamic> json) {
+    return MensaMeal(json['name'], json['category']);
+  }
 }

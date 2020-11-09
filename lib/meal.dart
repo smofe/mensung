@@ -54,7 +54,6 @@ class Meal {
     mealData["notes"] = notes;
     mealData["rating"] = rating;
     mealData["createdAt"] = createdAt;
-    print(mealData);
     dbRef
         .collection("users")
         .doc(auth.currentUser.uid)
