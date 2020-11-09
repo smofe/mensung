@@ -1,4 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+final auth = FirebaseAuth.instance;
+final dbRef = FirebaseFirestore.instance;
+
 
 class Meal {
   String id;
@@ -29,4 +34,26 @@ class Meal {
 
   @override
   String toString() => 'Meal<$name:$rating>';
+
+  void deleteReference(){
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(auth.currentUser.uid)
+        .collection("meals")
+        .doc(id).delete();
+  }
+
+  void safeReference() {
+    final Map<String, dynamic> mealData = {};
+    mealData["name"] = name;
+    mealData["notes"] = notes;
+    mealData["rating"] = rating;
+    mealData["createdAt"] = createdAt;
+    print(mealData);
+    dbRef
+        .collection("users")
+        .doc(auth.currentUser.uid)
+        .collection("meals")
+    .doc(id).set(mealData);
+  }
 }

@@ -56,7 +56,22 @@ class MealOverviewState extends State<MealOverview> {
     return Padding(
       key: ValueKey(meal.name),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Container(
+      child: Dismissible(
+        background: Container(color: Colors.red),
+        key: ValueKey(meal.name),
+        onDismissed: (direction) {
+          meal.deleteReference();
+
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text('$meal dismissed'),
+            action: SnackBarAction(
+              label: "UNDO",
+              onPressed: () => meal.safeReference(),
+            ),
+          ));
+        },
+        child:
+      Container(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey),
           borderRadius: BorderRadius.circular(5.0),
@@ -67,6 +82,7 @@ class MealOverviewState extends State<MealOverview> {
           onTap: () => _viewMeal(meal),
         ),
       ),
+    ),
     );
   }
 
@@ -127,6 +143,14 @@ class MealOverviewState extends State<MealOverview> {
     print(meal.notes);
     final result = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => MealView(meal)));
+  }
+
+  void _deleteMeal(Meal meal) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(auth.currentUser.uid)
+        .collection("meals")
+        .doc(meal.id).delete();
   }
 }
 
