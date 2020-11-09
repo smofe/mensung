@@ -1,16 +1,5 @@
-# mensa_rating_app
+# MENSUNG
 
-A simple app to rate mensa meals
+A simple app to rate and track the meals of your local mensa!
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+It's not always easy to choose between all the yummy (or not yummy) choices in your mensa. Even tho you might have eaten the same meal at the mensa before, it's been to long or it has been to forgettable for you to remember it's taste. Worry no more! With MENSUNG you can track your meals and always make the right choice!
