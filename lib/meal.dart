@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
 
 final auth = FirebaseAuth.instance;
 final dbRef = FirebaseFirestore.instance;
+final storage = firebase_storage.FirebaseStorage.instance;
+
 
 
 class Meal {
@@ -12,6 +16,7 @@ class Meal {
   double rating;
   Timestamp createdAt;
   DocumentReference reference;
+  String photoURL = '';
 
   Meal(this.name, this.rating) {
     this.createdAt = Timestamp.now();
@@ -55,5 +60,12 @@ class Meal {
         .doc(auth.currentUser.uid)
         .collection("meals")
     .doc(id).set(mealData);
+  }
+
+  Future<String> getPhotoURL() async {
+    String userID = auth.currentUser.uid;
+    final ref = storage.ref('users/$userID/meals/$id.png');
+
+    return await ref.getDownloadURL();
   }
 }

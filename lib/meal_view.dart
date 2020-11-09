@@ -27,7 +27,9 @@ class MealViewState extends State<MealView> {
         appBar: AppBar(title: Text('Meal Details')),
         body: Column(
             children: <Widget>[
-          Center(child:_mealPhoto(context)),
+              SizedBox(height:20),
+          Center(child:
+          _mealPhoto(context)),
 
           Text(
               meal.name,
@@ -62,18 +64,6 @@ class MealViewState extends State<MealView> {
     final ref = storage.ref('users/$userID/meals/$mealID.png');
 
     return await ref.getDownloadURL();
-
-    /*print('users/$userID/meals/$mealID.png');
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    File downloadToFile = File('${appDocDir.absolute}/download-photo.png');
-    try {
-      await storage
-          .ref('users/$userID/meals/$mealID.png')
-          .writeToFile(downloadToFile);
-    } on firebase_core.FirebaseException catch (e) {
-      print(e);
-    }
-    return downloadToFile; */
   }
 
   Widget _mealPhoto(BuildContext context) {

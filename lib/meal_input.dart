@@ -131,7 +131,7 @@ class MealInputState extends State<MealInput> {
 
 
 
-    Navigator.pop(context);
+    Navigator.pop(context, _photoPath);
   }
 
   void _takePicture(BuildContext context) async {
