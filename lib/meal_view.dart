@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'meal.dart';
@@ -14,6 +15,7 @@ class MealViewState extends State<MealView> {
   final dbRef = FirebaseFirestore.instance;
   final auth = FirebaseAuth.instance;
   final storage = firebase_storage.FirebaseStorage.instance;
+  final dateFormat = DateFormat("dd-MM-yy");
   final Meal meal;
   String _photoURL;
 
@@ -23,13 +25,34 @@ class MealViewState extends State<MealView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('Meal Details')),
-        body: Column(children: <Widget>[
-          _mealPhoto(context),
-          Text("Meal id:" + meal.id),
-          Text("Meal name:" + meal.name),
-          Text("Meal rating:" + meal.rating.toString()),
-          Text("Meal notes:" + meal.notes),
-          Text("Meal eating on:" + meal.createdAt.toDate().toString()),
+        body: Column(
+            children: <Widget>[
+          Center(child:_mealPhoto(context)),
+
+          Text(
+              meal.name,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          SizedBox(height:10),
+          RatingBar(
+            initialRating: meal.rating,
+            minRating: 1,
+            direction: Axis.horizontal,
+            allowHalfRating: true,
+            itemCount: 5,
+            itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
+            itemBuilder: (context, _) => Icon(
+              Icons.star,
+              color: Colors.amber,
+            ), onRatingUpdate: (double value) {  },
+            ignoreGestures: true,
+            unratedColor: Colors.grey,
+          ),
+              SizedBox(height:10),
+          Text(meal.notes == '' ? 'No notes for this meal.' : meal.notes),
+              SizedBox(height:10),
+          Text(dateFormat.format(meal.createdAt.toDate()),
+          style: Theme.of(context).textTheme.caption),
         ]));
   }
 
