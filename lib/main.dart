@@ -49,6 +49,7 @@ class MealOverviewState extends State<MealOverview> {
       );
     }
     return GridView.count(
+      shrinkWrap: true,
       crossAxisCount: 2,
       padding: const EdgeInsets.only(top: 20.0),
       children: snapshot.map((data) => _buildListItem(context, data)).toList(),
@@ -116,8 +117,13 @@ class MealOverviewState extends State<MealOverview> {
   }
 
   void _addNewMeal() async {
-    await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => MealInput()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => MealInput())).then((value) {
+          print(value);
+          setState(() {
+
+          });
+    });
   }
 
   void _handleMenuClick(String value) {

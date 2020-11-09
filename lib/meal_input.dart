@@ -11,6 +11,8 @@ import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:mensa_rating_app/main.dart';
+import 'package:mensa_rating_app/meal_view.dart';
 
 
 import 'meal.dart';
@@ -112,7 +114,7 @@ class MealInputState extends State<MealInput> {
   }
 
   Widget _mensaMealList(BuildContext context, List<MensaMeal> meals) {
-    return Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+    return
       Flexible(
           child: Container(
     padding: EdgeInsets.all(30),
@@ -130,7 +132,7 @@ class MealInputState extends State<MealInput> {
                     },
                 );
               }).toList())))
-    ]);
+    ;
   }
 
   Widget _mealPhoto(BuildContext context) {
@@ -143,10 +145,11 @@ class MealInputState extends State<MealInput> {
         fit: BoxFit.fitWidth);
   }
 
-  void _safePhoto(String name) async {
+  Future<dynamic> _savePhoto(String name) async {
+    if (_photoPath == null) return null;
     File photo = File(_photoPath);
     try {
-      await storage.ref('$name.png').putFile(photo);
+      return await storage.ref('$name.png').putFile(photo);
     } on firebase_core.FirebaseException catch (e) {
       print(e);
     }
@@ -163,9 +166,13 @@ class MealInputState extends State<MealInput> {
       'rating': _rating,
       'createdAt': Timestamp.now()
     });
-    docRef.then((value) => _safePhoto(value.path));
-
-    Navigator.pop(context, _photoPath);
+    //TODO: Implement asynchronous saving of the photo
+    //Currently we have to wait for the photo to be saved in order for it to be displayed correctly in the overview state.
+    docRef.then((value) {
+      _savePhoto(value.path).then((value) => {
+        Navigator.pop(context,_photoPath)
+      });
+    });
   }
 
   void _takePicture(BuildContext context) async {
