@@ -41,70 +41,75 @@ class MealInputState extends State<MealInput> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Add a new meal')),
-      body: Form(
-          key: _formKey,
-          child: Column(children: <Widget>[
-            Padding(
-              child: Container(),
-              padding: EdgeInsets.all(20),
-            ),
-            _mealPhoto(context),
-            FutureBuilder<List<MensaMeal>>(
-              future: _fetchMeals(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) return Text("${snapshot.error}");
-                return snapshot.hasData
-                    ? _mensaMealList(context, snapshot.data)
-                    : Center(child: CircularProgressIndicator());
-              },
-            ),
-            TextFormField(
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-              decoration: new InputDecoration(
-                  hintText: "Meal Name",
-                  contentPadding: EdgeInsets.only(
-                      left: 15, bottom: 11, top: 11, right: 15)),
-              controller: _mealNameController,
-            ),
-            RatingBar(
-              initialRating: 3,
-              minRating: 1,
-              direction: Axis.horizontal,
-              allowHalfRating: true,
-              itemCount: 5,
-              itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
-              itemBuilder: (context, _) => Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
-              onRatingUpdate: (rating) {
-                _rating = rating;
-              },
-            ),
-            TextFormField(
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              decoration: new InputDecoration(
-                  hintText: "Additional Notes",
-                  contentPadding: EdgeInsets.only(
-                      left: 15, bottom: 11, top: 11, right: 15)),
-              controller: _mealNotesController,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState.validate()) {
-                  _addMeal(context);
-                }
-              },
-              child: Text('Add meal'),
-            ),
+      body: CustomScrollView(
+        slivers: [SliverFillRemaining(
+          hasScrollBody: false,
+          child: Form(
+              key: _formKey,
+              child: Column(children: <Widget>[
+                Padding(
+                  child: Container(),
+                  padding: EdgeInsets.all(20),
+                ),
+                _mealPhoto(context),
+                FutureBuilder<List<MensaMeal>>(
+                  future: _fetchMeals(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) return Text("${snapshot.error}");
+                    return snapshot.hasData
+                        ? _mensaMealList(context, snapshot.data)
+                        : Center(child: CircularProgressIndicator());
+                  },
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                  decoration: new InputDecoration(
+                      hintText: "Meal Name",
+                      contentPadding: EdgeInsets.only(
+                          left: 15, bottom: 11, top: 11, right: 15)),
+                  controller: _mealNameController,
+                ),
+                RatingBar(
+                  initialRating: 3,
+                  minRating: 1,
+                  direction: Axis.horizontal,
+                  allowHalfRating: true,
+                  itemCount: 5,
+                  itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
+                  itemBuilder: (context, _) => Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                  onRatingUpdate: (rating) {
+                    _rating = rating;
+                  },
+                ),
+                TextFormField(
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  decoration: new InputDecoration(
+                      hintText: "Additional Notes",
+                      contentPadding: EdgeInsets.only(
+                          left: 15, bottom: 11, top: 11, right: 15)),
+                  controller: _mealNotesController,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState.validate()) {
+                      _addMeal(context);
+                    }
+                  },
+                  child: Text('Add meal'),
+                ),
 
-          ])),
+              ])),
+        )],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _takePicture(context),
         child: Icon(Icons.camera),

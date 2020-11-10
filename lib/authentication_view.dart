@@ -17,60 +17,65 @@ class AuthenticationViewState extends State<AuthenticationView> {
       appBar: AppBar(title: Text('Sign in')),
       body: Container(
         padding: const EdgeInsets.only(left: 30, right: 30, bottom: 30),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image(
-                image: AssetImage('assets/logo.png'),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 40.0),
-              ),
-              TextFormField(
-                keyboardType: TextInputType.emailAddress,
-                decoration: new InputDecoration(
-                    labelText: "Enter Email",
-                    contentPadding: EdgeInsets.only(
-                        left: 15, bottom: 11, top: 11, right: 15),
-                    border: new OutlineInputBorder(
-                        borderRadius: new BorderRadius.circular(25.0))),
-                controller: _emailController,
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 20.0),
-              ),
-              TextFormField(
-                obscureText: true,
-                decoration: new InputDecoration(
-                    labelText: "Enter Password",
-                    contentPadding: EdgeInsets.only(
-                        left: 15, bottom: 11, top: 11, right: 15),
-                    border: new OutlineInputBorder(
-                        borderRadius: new BorderRadius.circular(25.0))),
-                controller: _passwordController,
-              ),
-              Row(
+        child: CustomScrollView(
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  TextButton(
-                    child: Text("Register"),
-                    onPressed: () => _registerWithEmail(),
+                  Image(
+                    image: AssetImage('assets/logo.png'),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 40.0),
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: new InputDecoration(
+                        labelText: "Enter Email",
+                        contentPadding: EdgeInsets.only(
+                            left: 15, bottom: 11, top: 11, right: 15),
+                        border: new OutlineInputBorder(
+                            borderRadius: new BorderRadius.circular(25.0))),
+                    controller: _emailController,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 20.0),
+                  ),
+                  TextFormField(
+                    obscureText: true,
+                    decoration: new InputDecoration(
+                        labelText: "Enter Password",
+                        contentPadding: EdgeInsets.only(
+                            left: 15, bottom: 11, top: 11, right: 15),
+                        border: new OutlineInputBorder(
+                            borderRadius: new BorderRadius.circular(25.0))),
+                    controller: _passwordController,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        child: Text("Register"),
+                        onPressed: () => _registerWithEmail(),
+                      ),
+                      TextButton(
+                        child: Text("Sign in"),
+                        onPressed: () => _signInWithEmail(),
+                      ),
+                    ],
                   ),
                   TextButton(
-                    child: Text("Sign in"),
-                    onPressed: () => _signInWithEmail(),
+                    child: Text("Continue as guest"),
+                    style: TextButton.styleFrom(primary: Colors.grey),
+                    onPressed: () => _signInAnonymously(),
                   ),
                 ],
               ),
-              TextButton(
-                child: Text("Continue as guest"),
-                style: TextButton.styleFrom(primary: Colors.grey),
-                onPressed: () => _signInAnonymously(),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -95,7 +100,6 @@ class AuthenticationViewState extends State<AuthenticationView> {
     } catch (e) {
       print(e);
     }
-
   }
 
   void _signInWithEmail() async {
