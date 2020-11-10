@@ -40,8 +40,8 @@ class Meal {
   @override
   String toString() => 'Meal<$name:$rating>';
 
-  void deleteReference(){
-    FirebaseFirestore.instance
+  Future deleteReference() async{
+    return await FirebaseFirestore.instance
         .collection('users')
         .doc(auth.currentUser.uid)
         .collection("meals")

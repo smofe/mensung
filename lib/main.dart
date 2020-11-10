@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 import 'package:mensa_rating_app/authentication_view.dart';
 import 'package:mensa_rating_app/meal.dart';
 import 'package:mensa_rating_app/meal_view.dart';
@@ -60,7 +61,7 @@ class MealOverviewState extends State<MealOverview> {
     var meal = Meal.fromSnapshot(data);
     meal.id = data.id;
     return Padding(
-      key: ValueKey(meal.name),
+      key: UniqueKey(),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Dismissible(
         background: Container(color: Colors.red),
@@ -111,7 +112,7 @@ class MealOverviewState extends State<MealOverview> {
       floatingActionButton: FloatingActionButton(
         onPressed: _addNewMeal,
         child: Icon(Icons.add),
-        backgroundColor: Colors.green,
+        //backgroundColor: Colors.green,
       ),
     );
   }
@@ -187,7 +188,19 @@ class MealOverviewState extends State<MealOverview> {
                     height: 200,
                   );
               })),
-      Text(meal.name)
+      Container(
+        width: 200,
+        height: 20,
+        color: Colors.black.withAlpha(128),
+      child:Marquee(
+        crossAxisAlignment: CrossAxisAlignment.center,
+          style: TextStyle(color: Colors.white),
+          text:  meal.name + '       ',
+          pauseAfterRound: Duration(seconds: 1),
+          startPadding: 0.0,
+          blankSpace: 20.0,
+
+      )),
     ]);
   }
 }
