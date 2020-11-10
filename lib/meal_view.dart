@@ -24,37 +24,35 @@ class MealViewState extends State<MealView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Meal Details')),
-        body: Column(
-            children: <Widget>[
-              SizedBox(height:20),
-          Center(child:
-          _mealPhoto(context)),
-
+        appBar: AppBar(
+            title: Text('Meal Details')),
+        body: Column(children: <Widget>[
+          SizedBox(height: 10),
           Text(
-              meal.name,
-            style: Theme.of(context).textTheme.headline6,
+            meal.name,
+            style: Theme.of(context).textTheme.headline5,
+            textAlign: TextAlign.center,
           ),
-          SizedBox(height:10),
-          RatingBar(
-            initialRating: meal.rating,
-            minRating: 1,
+          Center(child: _mealPhoto(context)),
+          SizedBox(height: 10),
+          SizedBox(height: 10),
+          Text(meal.notes == '' ? 'No notes for this meal.' : meal.notes),
+          SizedBox(height: 10),
+          Text(dateFormat.format(meal.createdAt.toDate()),
+              style: Theme.of(context).textTheme.caption),
+          Spacer(),
+          RatingBarIndicator(
+            rating: meal.rating,
             direction: Axis.horizontal,
-            allowHalfRating: true,
             itemCount: 5,
-            itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
+            itemPadding: EdgeInsets.symmetric(horizontal: 8.0),
             itemBuilder: (context, _) => Icon(
               Icons.star,
               color: Colors.amber,
-            ), onRatingUpdate: (double value) {  },
-            ignoreGestures: true,
+            ),
             unratedColor: Colors.grey,
           ),
-              SizedBox(height:10),
-          Text(meal.notes == '' ? 'No notes for this meal.' : meal.notes),
-              SizedBox(height:10),
-          Text(dateFormat.format(meal.createdAt.toDate()),
-          style: Theme.of(context).textTheme.caption),
+          SizedBox(height: 10),
         ]));
   }
 
@@ -68,17 +66,21 @@ class MealViewState extends State<MealView> {
 
   Widget _mealPhoto(BuildContext context) {
     _downloadPhoto().then((value) => setState(() {
-      _photoURL = value.toString();
-      print(_photoURL);
-    }));
+          _photoURL = value.toString();
+          print(_photoURL);
+        }));
 
-    return Image(
-        image: _photoURL == null
-            ? AssetImage('assets/mealplate.png')
-            : NetworkImage(_photoURL),
-        height: 200,
-        width: 200,
-        fit: BoxFit.fitWidth);
+    return Container(
+      padding: EdgeInsets.only(left: 20, right: 20, bottom: 10, top: 10),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Image(
+            image: _photoURL == null
+                ? AssetImage('assets/mealplate.png')
+                : NetworkImage(_photoURL),
+            fit: BoxFit.fitWidth),
+      ),
+    );
   }
 }
 
